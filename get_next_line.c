@@ -11,12 +11,29 @@
 /* ************************************************************************** */
 #include "get_next_line.h"
 
-char *get_next_line(int fd)
+char *get_next_line(int fd, char **line)
 {
     int file;
-    int BUFFER_SIZE;
+    static char *str[FD_SIZE + 1];
+    char buffsize[BUFFER_SIZE + 1];
+    char *holder;
 
-    BUFFER_SIZE = 0;
-    // file = read(fd, BUFFER_SIZE, )
-    printf("%d", BUFFER_SIZE);
+    if (fd < 0 || line == NULL)
+        return (-1);
+    file = read(fd, buffsize, BUFFER_SIZE)
+    while (file > 0)
+    {
+        buffsize[file] = '\0';
+        if (str[fd] == NULL)
+            str[fd] = ft_strdup(buffsize);
+        else
+            {
+                holder = ft_strjoin(str[fd], buffsize);
+                free(str[fd]);
+                str[fd] = holder;
+            }
+        if (ft_strchr(str[fd], '\n'))
+            break ;
+    }
+    // printf("%d", BUFFER_SIZE);
 }
