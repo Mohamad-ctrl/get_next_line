@@ -10,60 +10,91 @@
 /*                                                                            */
 /* ************************************************************************** */
 #include "get_next_line.h"
-#include "Libft/libft.h"
-#include "Libft/printf/ft_printf_lib.h"
 
-char *get_next_line(int fd, char **line)
+char *ft_get_line(char *str)
 {
-    int file;
-    static char *str[FD_SIZE + 1];
-<<<<<<< HEAD
-    char buff[BUFFER_SIZE + 1];
-=======
-    char buffsize[BUFFER_SIZE + 1];
->>>>>>> fc38c4577b886599940d3fbbe1dd5d8e8ffa4b84
-    char *holder;
+    int i;
+    char *line;
 
-    if (fd < 0 || line == NULL)
-        return (-1);
-<<<<<<< HEAD
-    file = read(fd, buff, BUFFER_SIZE)
-    while (file > 0)
+    i = 0;
+    while (str[i] != '\n' && str[i] != '\0')
+        i++;
+    if (str[i] == '\n')
     {
-        buff[file] = '\0';
-        if (str[fd] == NULL)
-            str[fd] = ft_strdup(buff);
-        else
-            {
-                holder = ft_strjoin(str[fd], buff);
-=======
-    file = read(fd, buffsize, BUFFER_SIZE)
-    while (file > 0)
+        line = ft_substr(str, 0, i + 1);
+        str = ft_substr(str, i + 1, ft_strlen(str));
+    }
+    else
     {
-        buffsize[file] = '\0';
-        if (str[fd] == NULL)
-            str[fd] = ft_strdup(buffsize);
+        line = ft_substr(str, 0, i);
+        str = NULL;
+    }
+    return (line);
+}
+
+char *ft_save_line(char *str)
+{
+    int i;
+    int j;
+    char *line;
+
+    i = 0;
+    j = 0;
+    if (!str)
+        return (NULL);
+    while (str[i] != '\n' && str[i] != '\0')
+        i++;
+    if (str[i] == '\0')
+    {
+        free(str);
+        return (NULL);
+    }
+    line = (char *)malloc(sizeof(char) * (ft_strlen(str) - i + 1));
+    if (!line)
+        return (NULL);
+    i++;
+    while (str[i] != '\0')
+        line[j++] = str[i++];
+    line[j] = '\0';
+    free(str);
+    return (line);
+}
+
+char *ft_read_and_save(int fd, char *str)
+{
+    char *buff;
+    int ret;
+
+    buff = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
+    if (!buff)
+        return (NULL);
+    ret = read(fd, buff, BUFFER_SIZE);
+    while (ret > 0)
+    {
+        buff[ret] = '\0';
+        if (!str)
+            str = ft_strdup(buff);
         else
-            {
-                holder = ft_strjoin(str[fd], buffsize);
->>>>>>> fc38c4577b886599940d3fbbe1dd5d8e8ffa4b84
-                free(str[fd]);
-                str[fd] = holder;
-            }
-        if (ft_strchr(str[fd], '\n'))
+            str = ft_strjoin(str, buff);
+        if (ft_strchr(str, '\n'))
             break ;
-<<<<<<< HEAD
-        return ()
+        ret = read(fd, buff, BUFFER_SIZE);
     }
+    free(buff);
+    return (str);
 }
 
-int main(int ac, char **av)
+char *get_next_line(int fd)
 {
-    ft_printf("My Atoi : -> %d\n", ft_atoi(av[1]));
-    ft_printf("Real atoi : -> %d\n", atoi(av[1]));
+    static char *str;
+    char *line;
+
+    if (fd < 0 || BUFFER_SIZE <= 0)
+        return (NULL);
+    str = ft_read_and_save(fd, str);
+    if (!str)
+        return (NULL);
+    line = ft_get_line(str);
+    str = ft_save_line(str);
+    return (line);
 }
-=======
-    }
-    // printf("%d", BUFFER_SIZE);
-}
->>>>>>> fc38c4577b886599940d3fbbe1dd5d8e8ffa4b84
